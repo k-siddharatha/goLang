@@ -1,8 +1,9 @@
 # Introduction
 
 Repository Name: SOA_GoLang
-Description: The code demonstrates design patterns developed
-in GoLang and also demonstrates skills in developing
+
+
+Description: The code demonstrates design patterns developed in GoLang and also demonstrates skills in developing
 REST APIs in GoLang by following Service Oriented Architecture principles.
 
 # Use
