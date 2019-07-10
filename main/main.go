@@ -1,11 +1,12 @@
 package main
 
 import (
-	"fmt"
-	"net/http"
-
 	"app/factoryMethod"
 	"app/singleton"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"net/http"
 )
 
 func main() {
@@ -14,17 +15,55 @@ func main() {
 
 func handler() http.Handler {
 	r := http.NewServeMux()
-	r.HandleFunc("/singleton", (singletonHandler{}).Handle())
-	r.HandleFunc("/factorymethod", (factoryMethodHandler{}).Handle())
+	endpoints []Handle{singletonHandler{}, factoryMethodHandler{}, postService{}}
+	for i:= range(endpoints) {
+		r.HandleFunc("/singleton", i.Handle())
+	}
+//	r.HandleFunc("/singleton", (singletonHandler{}).Handle())
+//	r.HandleFunc("/factorymethod", (factoryMethodHandler{}).Handle())
+//	r.HandleFunc("/post/add", (postService{}).Handle())
+
 	return r
 }
 
 type Handler interface {
+	GetEndpoint() string
 	Handle(command string) func(http.ResponseWriter, *http.Request)
 }
 
-type singletonHandler struct{}
 
+type message struct {
+	username string `json:"username"`
+	content  string `json:"content"`
+}
+
+type postService struct {
+	id      *int64
+	postmap map[int64]message
+}
+
+func (ps postService) GetEndpoint() string {
+	return "/post/add"
+}
+
+func (ps postService) Handle() func(http.ResponseWriter, *http.Request) {
+	return func(w http.ResponseWriter, r *http.Request) {
+		t := new(message)
+		body, _ := ioutil.ReadAll(r.Body)
+		err := json.Unmarshal(body, &t)
+		if err != nil {
+			fmt.Fprintf(w, "Panic")
+			panic(err)
+		}
+		fmt.Fprintf(w, fmt.Sprintf("t.username:%v, and t.content:%v", t.username, t.content))
+
+	}
+}
+
+type singletonHandler struct{}
+func (sh singletonHandler) GetEndpoint() string {
+	return "/singleton"
+}
 func (sh singletonHandler) Handle() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s := singleton.New()
@@ -38,6 +77,10 @@ func (sh singletonHandler) Handle() func(http.ResponseWriter, *http.Request) {
 
 type factoryMethodHandler struct{}
 
+func (fm factoryMethodHandler) GetEndpoint() string {
+	return "/factorymethod"
+}
+
 func (fmh factoryMethodHandler) Handle() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -46,10 +89,3 @@ func (fmh factoryMethodHandler) Handle() func(http.ResponseWriter, *http.Request
 	}
 }
 
-func commandHandler(resWriter http.ResponseWriter, r *http.Request) {
-	s := singleton.New()
-	s["Amit"] = "Kumar"
-	s2 := singleton.New()
-	fmt.Fprint(resWriter, fmt.Sprintf("\n Received a request singleton2['Amit']=%v \n %v \n %v \n %v",
-		s2["Amit"], factoryMethod.NewStore(1).Open("x"), factoryMethod.NewStore(2).Open("x"), factoryMethod.NewStore(4).Open("x")))
-}
