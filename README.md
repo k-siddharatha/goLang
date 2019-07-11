@@ -97,4 +97,18 @@ $ docker exec soa_golang_goserver_1 curl 192.168.16.2:8080/factorymethod
  Block File System
 
 
+
+docker exec soa_golang_goserver_1 curl  -X POST -H "Content-Type: application/json" -d @data.json 172.26.0.2:8080/post/add
+
+
 ```
+
+## Concurrency Patterns
+
+### Maintain local object consensus protocol
+
+In order to understand and practice concurrency patterns, I can build a membership service for an FSM to coordinate among themselves to keep a consensus state in their local memory in a redundant manner.
+
+Algorithm: Paxos algorithm.
+
+How to build consensus on a document data structure by multiple collaborating parties.
