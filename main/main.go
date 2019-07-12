@@ -3,9 +3,8 @@ package main
 import (
 	"app/factoryMethod"
 	"app/singleton"
-	"encoding/json"
+	"app/postService"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 )
 
@@ -22,40 +21,21 @@ func handler() http.Handler {
 	r := http.NewServeMux()
 	r.HandleFunc("/singleton", (singletonHandler{}).Handle())
 	r.HandleFunc("/factorymethod", (factoryMethodHandler{}).Handle())
-	r.HandleFunc("/post/add", (postService{}).Handle())
+	r.HandleFunc("/post/add", (postHandler{}).Handle())
 
 	return r
 }
 
 
 
-type message struct {
-	username string `json:"username"`
-	content  string `json:"content"`
-}
+type postHandler struct{}
 
-type postService struct {
-	id      *int64
-	postmap map[int64]message
-}
-
-func (ps postService) Handle() func(http.ResponseWriter, *http.Request) {
+func (ps postHandler) Handle() func(http.ResponseWriter, *http.Request) {
 	return func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, fmt.Sprintf("%v", r))
-		var t message
-		body, err := ioutil.ReadAll(r.Body)
-		defer r.Body.Close()
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		err = json.Unmarshal(body, &t)
-		if err != nil {
-			http.Error(w, err.Error(), 500)
-			return
-		}
-		fmt.Fprintf(w, fmt.Sprintf("\nt:%v\n", t))
-		fmt.Fprintf(w, fmt.Sprintf("t.username:%v, and t.content:%v", t.username, t.content))
+		/*Create a factory to take http.Request object and return post object*/
+		ps := postService.NewPostService()
+		msg := ps.GetPostFromRequest(*r)
+		fmt.Fprintf(w, fmt.Sprintf("\nmsg:%v\n", msg))
 	}
 }
 
