@@ -1,16 +1,15 @@
 # Introduction
 
-Repository Name: SOA_GoLang
-
-
 Description: The code demonstrates design patterns developed in GoLang and also demonstrates skills in developing
 REST APIs in GoLang by following Service Oriented Architecture principles.
 
 # Use
 
+The repository is to practise GoLang development for production use. 
+
 ## Abstract
 
-Docker, Docker-Compose and internet connection
+With containerized REST APIs distributed services can be built to provide data persistence, reliability and high availability. In this particular repository we are using Docker, Docker-Compose and Go containers built out of one image.
 
 ### Steps
 
@@ -20,6 +19,12 @@ Docker, Docker-Compose and internet connection
 4. endpoints are
     1. /singleton
     2. /factorymethod
+    3. /post/add
+    For rest of the interfaces I am building test routines to test respective service. For instance for testing Builder Pattern do the following.
+    
+    1. run ```docker-compose up --build -d```
+    2. run ```winpty docker exec soa_golang_goserver_1 bash -c "cd /go/src/app/builderService; go test"```
+    Note: in the second step "winpty" is needed because the command was run on Git Bash shell that doesn't provide appropriate terminal byy default
 
 Endpoints demonstrate respective design patterns.
 
@@ -99,6 +104,17 @@ $ docker exec soa_golang_goserver_1 curl 192.168.16.2:8080/factorymethod
 
 
 docker exec soa_golang_goserver_1 curl  -X POST -H "Content-Type: application/json" -d @data.json 172.26.0.2:8080/post/add
+
+
+```
+
+## Builder Pattern
+
+```
+
+$ winpty docker exec soa_golang_goserver_1 bash -c "cd /go/src/app/builderService; go test"
+{map[top:Home Page Top] map[bottom:Home Page Bottom] map[left:Home Page Left] map[right:Home Page Right]}PASS
+ok      _/go/src/app/builderService     0.002s
 
 
 ```
