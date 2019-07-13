@@ -35,10 +35,10 @@ type HomePageBuilderService struct{
 }
 
 func NewHomePageBuilderService() BuilderService {
-  return HomePageBuilderService{}
+  return &HomePageBuilderService{}
 }
 
-func (hpbs HomePageBuilderService) SetDataToHtml() BuilderService {
+func (hpbs *HomePageBuilderService) SetDataToHtml() BuilderService {
   hpbs.HomePage = Page{
     HtmlTop: map[string]string{
       "top":"Home Page Top",
@@ -56,6 +56,6 @@ func (hpbs HomePageBuilderService) SetDataToHtml() BuilderService {
   return hpbs
 }
 
-func (hpbs HomePageBuilderService) GetBuild() Page {
+func (hpbs *HomePageBuilderService) GetBuild() Page {
   return hpbs.HomePage
 }
