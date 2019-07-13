@@ -20,10 +20,12 @@ With containerized REST APIs distributed services can be built to provide data p
     1. /singleton
     2. /factorymethod
     3. /post/add
+    
     For rest of the interfaces I am building test routines to test respective service. For instance for testing Builder Pattern do the following.
     
     1. run ```docker-compose up --build -d```
     2. run ```winpty docker exec soa_golang_goserver_1 bash -c "cd /go/src/app/builderService; go test"```
+    
     Note: in the second step "winpty" is needed because the command was run on Git Bash shell that doesn't provide appropriate terminal byy default
 
 Endpoints demonstrate respective design patterns.
