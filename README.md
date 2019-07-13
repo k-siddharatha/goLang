@@ -34,45 +34,43 @@ Endpoints demonstrate respective design patterns.
 
 ```
 
-$ docker-compose up --build
+$ docker-compose up --build -d
 Building goserver
-Step 1/9 : FROM golang:latest
- ---> 9fe4cdc1f173
-Step 2/9 : RUN mkdir -p /go/src/app/
+Step 1/8 : FROM golang:latest
+ ---> f50db16df5da
+Step 2/8 : RUN mkdir -p /go/src/app/
  ---> Using cache
- ---> 9126518a1750
-Step 3/9 : COPY . /go/src/app/
- ---> bcdab0ca8604
-Step 4/9 : WORKDIR /go/src/app/
- ---> Running in 4e08458553a0
-Removing intermediate container 4e08458553a0
- ---> 732d4cb1c491
-Step 5/9 : EXPOSE 8080
- ---> Running in 4279164e57db
-Removing intermediate container 4279164e57db
- ---> 91e7d240a774
-Step 6/9 : EXPOSE 8081
- ---> Running in f7b080a7d748
-Removing intermediate container f7b080a7d748
- ---> 8d7550992197
-Step 7/9 : RUN go get -d -v ./...
- ---> Running in a0764d3dba5e
-Removing intermediate container a0764d3dba5e
- ---> ce928669cead
-Step 8/9 : RUN go install -v ./...
- ---> Running in 7fb491fe3c81
+ ---> eac81f734e94
+Step 3/8 : COPY . /go/src/app/
+ ---> 58f1bbc8bcc7
+Step 4/8 : WORKDIR /go/src/app/
+ ---> Running in 5e30e532afcb
+Removing intermediate container 5e30e532afcb
+ ---> 28d9ade1084b
+Step 5/8 : EXPOSE 8080
+ ---> Running in 6c533c340028
+Removing intermediate container 6c533c340028
+ ---> ccccaea13546
+Step 6/8 : RUN go get -d -v ./...
+ ---> Running in e6a2dad76374
+Removing intermediate container e6a2dad76374
+ ---> ddb671ae5282
+Step 7/8 : RUN go install -v ./...
+ ---> Running in 93ee30fc0a80
 app/factoryMethod
+app/builderService
 app/singleton
+app/postService
 app/main
-Removing intermediate container 7fb491fe3c81
- ---> 73293078bbeb
-Step 9/9 : CMD ["main"]
- ---> Running in 10d004776482
-Removing intermediate container 10d004776482
- ---> ce8ce981e613
-Successfully built ce8ce981e613
+Removing intermediate container 93ee30fc0a80
+ ---> 70fb0260a367
+Step 8/8 : CMD ["main"]
+ ---> Running in f517de74bc00
+Removing intermediate container f517de74bc00
+ ---> c1c2b23b812f
+Successfully built c1c2b23b812f
 Successfully tagged soa_golang_goserver:latest
-Recreating soa_golang_goserver_1 ... done
+Creating soa_golang_goserver_1 ... done
 
 
 ```
