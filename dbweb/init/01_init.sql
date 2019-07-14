@@ -1,0 +1,4 @@
+CREATE USER vigyaauser WITH PASSWORD 'postgres';;
+CREATE DATABASE vigyaa;
+GRANT ALL PRIVILEGES ON DATABASE vigyaa TO vigyaauser;
+ALTER USER vigyaauser CREATEDB;
