@@ -23,6 +23,7 @@ func NewPostService() PostService {
 }
 func GetMessageFromBody(b []byte) Message {
 	var t Message
+	fmt.Printf("b:%v", b)
   err := json.Unmarshal(b, &t)
   if err != nil {
     return Message{}
