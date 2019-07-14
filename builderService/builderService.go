@@ -12,6 +12,8 @@ type BuilderService interface {
   GetBuild() Page
 }
 
+/*Is a candidate for Singleton pattern to manage all the data that gets shown on
+any of the views.*/
 type BuildDirector struct {
   BuildServiceInstance BuilderService
 }

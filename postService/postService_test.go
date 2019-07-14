@@ -2,28 +2,29 @@ package postService
 
 import (
   "testing"
-  "encoding/json"
+  "bytes"
+  "fmt"
 )
 
-func TestGetPostFromRequest(t *testing.T) {
-  message := map[string]interface{}{
-		"username": "aksinghdce",
-		"content":  "This is the content",
-	}
-
-	bytesRepresentation, err := json.Marshal(message)
-	if err != nil {
-		t.Errorf("Error in Marshal:%v",err)
-	}
-
-  m := GetMessageFromBody(bytesRepresentation)
-  expected_username := message["username"]
-  expected_content := message["content"]
-  if m.username != expected_username {
-    t.Errorf("Byte Representation of Input:%v", bytesRepresentation)
-    t.Errorf("Username mismatch, expected:%v, output:%v", expected_username, m.username)
+func get_string_from_map(m map[string]string) string {
+  v := new(bytes.Buffer)
+  for key, val := range(m) {
+    fmt.Fprintf(v, "%s=\"%s\",\n", key, val)
   }
-  if m.content != expected_content {
-    t.Errorf("Content mismatch, expected:%v, output:%v", expected_content, m.content)
+  return v.String()
+}
+
+func TestGetPostFromRequest(t *testing.T) {
+  msg := map[string]string{
+    "username":"aksinghdce",
+    "content":"Some Content",
+  }
+
+  var m Message = GetMessageFromBody([]byte(get_string_from_map(msg)))
+  if m.username != "aksinghdce" {
+    t.Errorf("Username mismatch, expected:%v, output:%v", msg["username"], m.username)
+  }
+  if m.content != "some content" {
+    t.Errorf("Content mismatch, expected:%v, output:%v", msg["content"], m.content)
   }
 }
