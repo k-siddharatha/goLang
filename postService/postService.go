@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"io/ioutil"
+	"fmt"
 )
 
 type Message struct {
@@ -20,17 +21,21 @@ func NewPostService() PostService {
 	var ps PostService
 	return ps
 }
-
+func GetMessageFromBody(b []byte) Message {
+	var t Message
+  err := json.Unmarshal(b, &t)
+  if err != nil {
+    return Message{}
+  }
+  return t
+}
 func (ps PostService) GetPostFromRequest(rObject http.Request) Message {
   body, err := ioutil.ReadAll(rObject.Body)
   defer rObject.Body.Close()
   if err != nil {
     return Message{}
   }
-  var t Message
-  err = json.Unmarshal(body, &t)
-  if err != nil {
-    return Message{}
-  }
-  return t
+	m := GetMessageFromBody(body)
+	fmt.Printf("Message:%v", m)
+	return m
 }

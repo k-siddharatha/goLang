@@ -10,3 +10,9 @@ services:
       - ./secret.env
         #    command: >
         #      bash -c "cd /go/main; go run main.go"
+  dbweb:
+    build: './dbweb'
+    env_file:
+      - ./dbweb/dbwebsecrets.env
+    ports:
+      - "5432:5432"
