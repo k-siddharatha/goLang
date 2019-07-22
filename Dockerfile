@@ -23,16 +23,14 @@ ENV GOOGLE_URL https://storage.googleapis.com/etcd
 ENV GITHUB_URL https://github.com/etcd-io/etcd/releases/download
 ENV DOWNLOAD_URL ${GITHUB_URL}
 
-RUN mkdir -p /tmp/etcd-download-test
+#RUN mkdir -p /tmp/etcd-download-test
+RUN mkdir -p $GOPATH/bin/
 
 RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
-RUN tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C /tmp/etcd-download-test --strip-components=1
+RUN tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C $GOPATH/bin/ --strip-components=1
 RUN rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
 
-RUN /tmp/etcd-download-test/etcd --version
+RUN $GOPATH/bin/etcd --version
 ENV ETCDCTL_API 3
-RUN /tmp/etcd-download-test/etcdctl version
-#RUN curl -o build_etcd.sh -SL https://raw.githubusercontent.com/linux-on-ibm-z/scripts/master/etcd/3.3.13/build_etcd.sh
-#USER root
-#RUN ./build_etcd.sh
+RUN $GOPATH/bin/etcdctl version
 CMD ["main"]
