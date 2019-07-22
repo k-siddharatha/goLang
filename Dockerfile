@@ -33,4 +33,5 @@ RUN rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
 RUN $GOPATH/bin/etcd --version
 ENV ETCDCTL_API 3
 RUN $GOPATH/bin/etcdctl version
+RUN mkdir -p /var/etcd_data/
 CMD ["main"]

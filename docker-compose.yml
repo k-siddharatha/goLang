@@ -2,7 +2,70 @@ version: "3"
 services:
   goserver:
     build: .
-    ports:
-      - 8080:8080
+    expose:
+      - 2379
+      - 2380
     env_file:
       - ./secret.env
+    command:
+      - /go/bin/etcd
+      - -name
+      - goserver
+      - --data-dir
+      - /var/etcd_data
+      - -advertise-client-urls
+      - http://goserver:2379
+      - -listen-client-urls
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls
+      - http://goserver:2380
+      - -listen-peer-urls
+      - http://0.0.0.0:2380
+      - -initial-cluster
+      - goserver=http://goserver:2380,goserver1=http://goserver1:2380,goserver2=http://goserver2:2380
+  goserver1:
+    build: .
+    expose:
+      - 2379
+      - 2380
+    env_file:
+      - ./secret.env
+    command:
+      - /go/bin/etcd
+      - -name
+      - goserver1
+      - --data-dir
+      - /var/etcd_data
+      - -advertise-client-urls
+      - http://goserver1:2379
+      - -listen-client-urls
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls
+      - http://goserver1:2380
+      - -listen-peer-urls
+      - http://0.0.0.0:2380
+      - -initial-cluster
+      - goserver=http://goserver:2380,goserver1=http://goserver1:2380,goserver2=http://goserver2:2380
+  goserver2:
+    build: .
+    expose:
+      - 2379
+      - 2380
+    env_file:
+      - ./secret.env
+    command:
+      - /go/bin/etcd
+      - -name
+      - goserver2
+      - --data-dir
+      - /var/etcd_data
+      - -advertise-client-urls
+      - http://goserver2:2379
+      - -listen-client-urls
+      - http://0.0.0.0:2379
+      - -initial-advertise-peer-urls
+      - http://goserver2:2380
+      - -listen-peer-urls
+      - http://0.0.0.0:2380
+      - -initial-cluster
+      - goserver=http://goserver:2380,goserver1=http://goserver1:2380,goserver2=http://goserver2:2380
