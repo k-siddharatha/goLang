@@ -35,42 +35,110 @@ Endpoints demonstrate respective design patterns.
 ```
 
 $ docker-compose up --build -d
+Creating network "soa_golang_default" with the default driver
 Building goserver
-Step 1/8 : FROM golang:latest
- ---> f50db16df5da
-Step 2/8 : RUN mkdir -p /go/src/app/
+Step 1/30 : FROM golang:latest
+ ---> be63d15101cb
+Step 2/30 : RUN mkdir -p /go/src/app/
  ---> Using cache
- ---> eac81f734e94
-Step 3/8 : COPY . /go/src/app/
- ---> 58f1bbc8bcc7
-Step 4/8 : WORKDIR /go/src/app/
- ---> Running in 5e30e532afcb
-Removing intermediate container 5e30e532afcb
- ---> 28d9ade1084b
-Step 5/8 : EXPOSE 8080
- ---> Running in 6c533c340028
-Removing intermediate container 6c533c340028
- ---> ccccaea13546
-Step 6/8 : RUN go get -d -v ./...
- ---> Running in e6a2dad76374
-Removing intermediate container e6a2dad76374
- ---> ddb671ae5282
-Step 7/8 : RUN go install -v ./...
- ---> Running in 93ee30fc0a80
-app/factoryMethod
-app/builderService
-app/singleton
-app/postService
-app/main
-Removing intermediate container 93ee30fc0a80
- ---> 70fb0260a367
-Step 8/8 : CMD ["main"]
- ---> Running in f517de74bc00
-Removing intermediate container f517de74bc00
- ---> c1c2b23b812f
-Successfully built c1c2b23b812f
+ ---> 6c23f1673231
+Step 3/30 : COPY builderService /go/src/app/builderService
+ ---> Using cache
+ ---> ea5821e94328
+Step 4/30 : COPY factoryMethod /go/src/app/factoryMethod
+ ---> Using cache
+ ---> 902ea43fa0bd
+Step 5/30 : COPY postService /go/src/app/postService
+ ---> Using cache
+ ---> a86b674d892b
+Step 6/30 : COPY singleton /go/src/app/singleton
+ ---> Using cache
+ ---> ef55be8f852a
+Step 7/30 : COPY disDataDict /go/src/app/disDataDict
+ ---> Using cache
+ ---> 6078700865d1
+Step 8/30 : COPY main /go/src/app/main
+ ---> Using cache
+ ---> 3d4d6d812d0f
+Step 9/30 : EXPOSE 8080
+ ---> Using cache
+ ---> 659e95c983e6
+Step 10/30 : WORKDIR /go/src/app/
+ ---> Using cache
+ ---> 4737fb7a7e3d
+Step 11/30 : RUN go get -d -v go.etcd.io/etcd/client
+ ---> Using cache
+ ---> d78066090146
+Step 12/30 : RUN go install -v go.etcd.io/etcd/client
+ ---> Using cache
+ ---> 2bb3bd206979
+Step 13/30 : RUN go get -d -v ./...
+ ---> Using cache
+ ---> 5fee467bbefb
+Step 14/30 : RUN go install -v ./...
+ ---> Using cache
+ ---> 9844ccec9dbd
+Step 15/30 : RUN mkdir -p /go/src/etcd/
+ ---> Using cache
+ ---> 08f59f2180ac
+Step 16/30 : RUN apt-get update && apt-get -y upgrade
+ ---> Using cache
+ ---> 1f333d940ef5
+Step 17/30 : RUN apt-get install -y build-essential curl
+ ---> Using cache
+ ---> 477bcd28becc
+Step 18/30 : WORKDIR /go/src/
+ ---> Using cache
+ ---> c10ff1a60a0c
+Step 19/30 : ENV ETCD_VER v3.3.13
+ ---> Using cache
+ ---> a6d18fea1d64
+Step 20/30 : ENV GITHUB_URL https://github.com/etcd-io/etcd/releases/download
+ ---> Using cache
+ ---> 9f23c92b7830
+Step 21/30 : ENV DOWNLOAD_URL ${GITHUB_URL}
+ ---> Using cache
+ ---> 766e02a2b297
+Step 22/30 : RUN mkdir -p $GOPATH/bin/
+ ---> Using cache
+ ---> 5c1f9010a823
+Step 23/30 : RUN curl -L ${DOWNLOAD_URL}/${ETCD_VER}/etcd-${ETCD_VER}-linux-amd64.tar.gz -o /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+ ---> Using cache
+ ---> 8ea08bc63e85
+Step 24/30 : RUN tar xzvf /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz -C $GOPATH/bin/ --strip-components=1
+ ---> Using cache
+ ---> 5d6d53fe0432
+Step 25/30 : RUN rm -f /tmp/etcd-${ETCD_VER}-linux-amd64.tar.gz
+ ---> Using cache
+ ---> 465ea3fb7f8b
+Step 26/30 : RUN $GOPATH/bin/etcd --version
+ ---> Using cache
+ ---> 41b71ff3416f
+Step 27/30 : ENV ETCDCTL_API 3
+ ---> Using cache
+ ---> 5cc525062f68
+Step 28/30 : RUN $GOPATH/bin/etcdctl version
+ ---> Using cache
+ ---> 6f57691b0bd3
+Step 29/30 : RUN mkdir -p /var/etcd_data/
+ ---> Using cache
+ ---> 30f35bcc06d1
+Step 30/30 : CMD ["main"]
+ ---> Using cache
+ ---> 9a259d1da7e9
+Successfully built 9a259d1da7e9
 Successfully tagged soa_golang_goserver:latest
-Creating soa_golang_goserver_1 ... done
+Building goserver1
+.....................<Similar output as above>
+Successfully built 9a259d1da7e9
+Successfully tagged soa_golang_goserver1:latest
+Building goserver2
+.....................<Similar output as above>
+Successfully built 9a259d1da7e9
+Successfully tagged soa_golang_goserver2:latest
+Creating soa_golang_goserver2_1 ... done
+Creating soa_golang_goserver_1  ... done
+Creating soa_golang_goserver1_1 ... done
 
 
 ```
@@ -123,8 +191,16 @@ ok      _/go/src/app/builderService     0.002s
 
 ### Maintain local object consensus protocol
 
-In order to understand and practice concurrency patterns, I can build a membership service for an FSM to coordinate among themselves to keep a consensus state in their local memory in a redundant manner.
+For this purpose I used an opensource project known by the name of "etcd". This is a distributed key-value store that maintains eventual consistency by using RAFT algorithm under the hood. The following test case exemplifies the use of etcd:
 
-Algorithm: Paxos algorithm.
+```
 
-How to build consensus on a document data structure by multiple collaborating parties.
+$ winpty docker exec soa_golang_goserver_1 bash -c "cd /go/src/app/disDataDict/; go test"
+2019/07/24 19:22:22 Set is done, metadata is :&{set {Key: /foo, CreatedIndex: 8, ModifiedIndex: 8, TTL: 0} <nil> 8 bd16ad9b711e9502}
+2019/07/24 19:22:22 Get is done, metadata is :&{get {Key: /foo, CreatedIndex: 8, ModifiedIndex: 8, TTL: 0} <nil> 8 bd16ad9b711e9502}
+2019/07/24 19:22:22 "/foo" key has "bar" value
+PASS
+ok      app/disDataDict 0.060s
+
+
+```
