@@ -15,4 +15,13 @@ func TestNew(t *testing.T) {
     } else {
       log.Printf("Set is done, metadata is :%v\n", resp)
     }
+
+    resp, err = kAPI.Get(context.Background(), "/foo", nil)
+    if err != nil {
+      log.Fatal(err)
+      t.Error(err)
+    } else {
+      log.Printf("Get is done, metadata is :%v\n", resp)
+      log.Printf("%q key has %q value\n", resp.Node.Key, resp.Node.Value)
+    }
 }

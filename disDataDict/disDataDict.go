@@ -1,6 +1,7 @@
 package disDataDict
 
 import (
+	"log"
 	"go.etcd.io/etcd/client"
 )
 
@@ -10,7 +11,10 @@ func New() client.KeysAPI {
 	   Transport: client.DefaultTransport,
   }
 
-  c, _ := client.New(cfg)
+  c, err := client.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 
   kAPI := client.NewKeysAPI(c)
