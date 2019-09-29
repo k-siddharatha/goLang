@@ -2,10 +2,10 @@ FROM openjdk
 COPY apache-jmeter-5.1.1 /apache-jmeter-5.1.1
 
 FROM golang:latest
-RUN mkdir -p /usr/java/openjdk-12
-COPY --from=0 /usr/java/openjdk-12 /usr/java/openjdk-12
+RUN mkdir -p /usr/java/openjdk-13
+COPY --from=0 /usr/java/openjdk-13 /usr/java/openjdk-12
 COPY --from=0 /apache-jmeter-5.1.1 /apache-jmeter-5.1.1
-ENV JAVA_HOME /usr/java/openjdk-12
+ENV JAVA_HOME /usr/java/openjdk-13
 ENV PATH $PATH:/apache-jmeter-5.1.1/bin/
 RUN mkdir -p /go/src/app/
 COPY builderService /go/src/app/builderService
